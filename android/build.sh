@@ -1,5 +1,5 @@
 # !/bin/bash
-# Copyright Pristine Inc 
+# Copyright Pristine Inc
 # Author: Rahul Behera <rahul@pristine.io>
 # Author: Aaron Alaniz <aaron@pristine.io>
 # Author: Arik Yaacob   <arik@pristine.io>
@@ -212,34 +212,34 @@ execute_build() {
 
     echo "Build AppRTCDemo in $BUILD_TYPE (arch: ${WEBRTC_ARCH:-arm}) mode"
     ninja -C "$PATH_TO_FILE$BUILD_TYPE" AppRTCDemo
-    
+
     REVISION_NUM=`get_webrtc_revision`
     # Verify the build actually worked
     if [ $? -eq 0 ]; then
         SOURCE_DIR="$WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE"
         TARGET_DIR="$WEBRTC_ROOT/libjingle_peerconnection_builds/$REVISION_NUM/$BUILD_TYPE"
         create_directory_if_not_found "$TARGET_DIR"
-        
+
         rm "$TARGET_DIR/$REVISION_NUM.zip" || true
 
         echo "Copy JAR File"
         create_directory_if_not_found "$TARGET_DIR/libs/"
-        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/libs/" 
+        cp -p "$SOURCE_DIR/libjingle_peerconnection.jar" "$TARGET_DIR/libs/"
         create_directory_if_not_found "$TARGET_DIR/jniLibs/"
 
         if [ "$WEBRTC_ARCH" = "x86" ] ;
         then
             echo "Strip $WEBRTC_ARCH architecture into $TARGET_DIR/jniLibs/x86"
             create_directory_if_not_found "$TARGET_DIR/jniLibs/x86"
-            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-strip -o $TARGET_DIR/jniLibs/x86/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/libjingle_peerconnection_so.so -s`
+            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/x86-4.9/prebuilt/linux-x86_64/bin/i686-linux-android-strip -o $TARGET_DIR/jniLibs/x86/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s`
         elif [ "$WEBRTC_ARCH" = "x86_64" ] ;
         then
             create_directory_if_not_found "$TARGET_DIR/jniLibs/x86_64"
-            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-strip -o $TARGET_DIR/jniLibs/x86_64/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/libjingle_peerconnection_so.so -s`
+            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-strip -o $TARGET_DIR/jniLibs/x86_64/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s`
         elif [ "$WEBRTC_ARCH" = "armv7" ] ;
         then
             create_directory_if_not_found "$TARGET_DIR/jniLibs/armeabi-v7a"
-            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-strip -o $TARGET_DIR/jniLibs/armeabi-v7a/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/libjingle_peerconnection_so.so -s`
+            `$WEBRTC_ROOT/src/third_party/android_tools/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-strip -o $TARGET_DIR/jniLibs/armeabi-v7a/libjingle_peerconnection_so.so $WEBRTC_ROOT/src/$PATH_TO_FILE$BUILD_TYPE/lib/libjingle_peerconnection_so.so -s`
         elif [ "$WEBRTC_ARCH" = "armv8" ] ;
         then
             create_directory_if_not_found "$TARGET_DIR/jniLibs/arm64-v8a"
@@ -253,10 +253,10 @@ execute_build() {
         zip -r "$TARGET_DIR/$REVISION_NUM.zip" .
         cd $WORKING_DIR
 
-        
+
         echo "$BUILD_TYPE build for apprtc complete for revision $REVISION_NUM"
     else
-        
+
         echo "$BUILD_TYPE build for apprtc failed for revision $REVISION_NUM"
     fi
 }
